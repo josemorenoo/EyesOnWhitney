@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     def job():
         print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        people_who_care = ['josemoreno181818@gmail.com', 'jose.moreno@capitalone.com']
+        people_who_care = ['josemoreno181818@gmail.com', 'jose.moreno@capitalone.com', 'nfarias@berkeley.edu', 'mcdermenator@gmail.com']
         start_date = '2020-09-01'
         end_date   = '2020-10-15'
         whitney_id = 233260
