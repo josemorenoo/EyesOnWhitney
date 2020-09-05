@@ -15,4 +15,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-For now, run `python3 permitChecker.py`
+For now, run 
+```
+python3 permitChecker.py
+```
+This triggers a schedule that runs every five minutes. If no permits are found, a sanity check print statement is made, otherwise you will get an email
