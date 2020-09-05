@@ -11,6 +11,9 @@ import pprint
 from whitneymail import create_email_message
 from whitneymail import send_word_at_once
 
+import schedule
+import time
+
 
 ISO_DATE_FORMAT_REQUEST = "%Y-%m-%dT00:00:00.000Z"
 ISO_DATE_FORMAT_RESPONSE = "%Y-%m-%dT00:00:00Z"
@@ -74,30 +77,41 @@ def find_available_permits():
 
 if __name__ == "__main__":
 
-    people_who_care = ['josemoreno181818@gmail.com', 'nfarias@berkeley.edu', 'mcdermenator@gmail.com']
-    start_date = '2020-09-01'
-    end_date   = '2020-10-15'
-    whitney_id = 233260
+    def job():
+        print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        people_who_care = ['josemoreno181818@gmail.com', 'jose.moreno@capitalone.com']
+        start_date = '2020-09-01'
+        end_date   = '2020-10-15'
+        whitney_id = 233260
+        
+        month_date = construct_time_range(start_date, end_date)
+        params = {"start_date": format_date(month_date)}
+
+        url = construct_endpoint(whitney_id, start_date, end_date)
+        resp = send_request(url, params, showResponse=False)
+        
+        '''
+        # this mock-finds a permit
+
+        permits = [
+            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(1), "2020-08-01"),
+            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(4), "2020-09-01"),
+            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(2), "2020-10-01")
+        ]
+        '''
+        permits = find_available_permits()
+        if len(permits) > 0:
+            permits_available = '\n'.join(permits)
+            send_word_at_once(people_who_care, permits_available)
+        else:
+            permits_available = FAILURE_EMOJI + ' No permits found between {} and {}'.format(start_date, end_date)
+            print(permits_available)
+
+
+    # run on a schedule while AWS gets their shit together
+    schedule.every(5).minutes.do(job)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
     
-    month_date = construct_time_range(start_date, end_date)
-    params = {"start_date": format_date(month_date)}
-
-    url = construct_endpoint(whitney_id, start_date, end_date)
-    resp = send_request(url, params, showResponse=False)
-    
-    '''
-    # this mock-finds a permit
-
-    permits = [
-        SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(1), "2020-08-01"),
-        SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(4), "2020-09-01"),
-        SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(2), "2020-10-01")
-    ]
-    '''
-    permits = find_available_permits()
-    if len(permits) > 0:
-        permits_available = '\n'.join(permits)
-    else:
-        permits_available = FAILURE_EMOJI + ' No permits found between {} and {}'.format(start_date, end_date)
-
-    send_word_at_once(people_who_care, permits_available)
