@@ -19,7 +19,7 @@ def send_word_at_once(people: list, permits_available: str):
 
 def create_email_message(permits_available: str, receiver_email) -> str:
     message = MIMEMultipart("alternative")
-    message["Subject"] = "WHITNEY ALERT! (TEST)"
+    message["Subject"] = "WHITNEY ALERT!"
     message["From"] = sender_email
     message["To"] = receiver_email
 

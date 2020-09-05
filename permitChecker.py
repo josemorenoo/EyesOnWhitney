@@ -84,19 +84,18 @@ if __name__ == "__main__":
     url = construct_endpoint(whitney_id, start_date, end_date)
     resp = send_request(url, params, showResponse=False)
     
-    #permits = find_available_permits()
-
-    remaining = str(1)
+    ''' SUCCESS TEST
     permits = [
         SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(1), "2020-08-01"),
         SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(4), "2020-09-01"),
         SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(2), "2020-10-01")
     ]
+    '''
+    permits = find_available_permits()
     if len(permits) > 0:
         permits_available = '\n'.join(permits)
     else:
         permits_available = FAILURE_EMOJI + ' No permits found between {} and {}'.format(start_date, end_date)
 
     people_who_care = ['josemoreno181818@gmail.com', 'nfarias@berkeley.edu', 'mcdermenator@gmail.com']
-    #people_who_care = ['josemoreno181818@gmail.com']
     send_word_at_once(people_who_care, permits_available)
