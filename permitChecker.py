@@ -63,6 +63,18 @@ def construct_time_range(start_date, end_date):
     end_date_dt    = datetime(end_year, end_month, end_day)
     return list(rrule.rrule(rrule.MONTHLY, dtstart=start_of_month, until=end_date_dt))[0]
 
+def get_weekday(daystring):
+    # daystring format - 2020-01-01
+    y, m, d = daystring.split('-')
+    date_int = date(int(y), int(m), int(d)).weekday()
+    if (date_int == 0): return 'Monday'
+    if (date_int == 1): return 'Tuesday'
+    if (date_int == 2): return 'Wednesday'
+    if (date_int == 3): return 'Thursday'
+    if (date_int == 4): return 'Friday'
+    if (date_int == 5): return 'Saturday'
+    elif (date_int == 6): return 'Sunday'
+
 def find_available_permits(resp):
     successes = []
 
@@ -71,7 +83,7 @@ def find_available_permits(resp):
         remaining = availability['remaining']
         if (remaining > 0):
             day_available = date.split('T')[0]
-            message = SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(remaining), day_available)
+            message = SUCCESS_EMOJI + ' Found {} permits on {} [{}]'.format(str(remaining), day_available, get_weekday(day_available))
             successes.append(message)
     return successes
 
@@ -90,27 +102,33 @@ if __name__ == "__main__":
         url = construct_endpoint(whitney_id, start_date, end_date)
         resp = send_request(url, params, showResponse=False)
         
+        
+        # this mocks the finding of a permit
         '''
-        # this mock-finds a permit
-
         permits = [
-            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(1), "2020-08-01"),
-            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(4), "2020-09-01"),
-            SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(2), "2020-10-01")
+            SUCCESS_EMOJI + ' Found {} permits on {} [{}]'.format(str(1), "2020-08-01", get_weekday("2020-08-01")),
+            SUCCESS_EMOJI + ' Found {} permits on {} [{}]'.format(str(4), "2020-09-01", get_weekday("2020-09-01")),
+            SUCCESS_EMOJI + ' Found {} permits on {} [{}]'.format(str(2), "2020-10-01", get_weekday("2020-10-01"))
         ]
         '''
+        
         permits = find_available_permits(resp)
         if len(permits) > 0:
             permits_available = '\n'.join(permits)
             send_word_at_once(people_who_care, permits_available)
         else:
-            permits_available = FAILURE_EMOJI + ' No permits found between {} and {}'.format(start_date, end_date)
+            permits_available = FAILURE_EMOJI + ' No permits found between {} [{}] and {} [{}]'.format(start_date, get_weekday(start_date), end_date, get_weekday(end_date))
             print(permits_available)
 
 
+    SCHEDULE = True
+    
     # run on a schedule while AWS gets their shit together
-    schedule.every(5).minutes.do(job)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    if (SCHEDULE):
+        schedule.every(5).minutes.do(job)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+    else: # run once
+        job()
     

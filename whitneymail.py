@@ -3,6 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import random
 
+from datetime import date
+
 sender_email = "jmorenodev1@gmail.com"
 
 def send_word_at_once(people: list, permits_available: str):
