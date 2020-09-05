@@ -50,9 +50,9 @@ def printResponse(resp):
     """
     print(pprint.PrettyPrinter(depth=8).pprint(resp))
 
-def construct_endpoint(id, start_date, end_date):
+def construct_endpoint(permit_id, start_date, end_date):
     base_url          = "https://www.recreation.gov/api/permits/"
-    availability_path = "{}/divisions/166/availability?".format(whitney_id)
+    availability_path = "{}/divisions/166/availability?".format(permit_id)
     dates_path        = "start_date={}T00:00:00.000Z&end_date={}T00:00:00.000Z&commercial_acct=false".format(start_date, end_date)      
     return '{}{}{}'.format(base_url, availability_path, dates_path)
 
