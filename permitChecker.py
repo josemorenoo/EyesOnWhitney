@@ -63,7 +63,7 @@ def construct_time_range(start_date, end_date):
     end_date_dt    = datetime(end_year, end_month, end_day)
     return list(rrule.rrule(rrule.MONTHLY, dtstart=start_of_month, until=end_date_dt))[0]
 
-def find_available_permits():
+def find_available_permits(resp):
     successes = []
 
     dates = resp['payload']['date_availability']
@@ -99,7 +99,7 @@ if __name__ == "__main__":
             SUCCESS_EMOJI + ' Found {} permits on {}'.format(str(2), "2020-10-01")
         ]
         '''
-        permits = find_available_permits()
+        permits = find_available_permits(resp)
         if len(permits) > 0:
             permits_available = '\n'.join(permits)
             send_word_at_once(people_who_care, permits_available)
@@ -110,7 +110,6 @@ if __name__ == "__main__":
 
     # run on a schedule while AWS gets their shit together
     schedule.every(5).minutes.do(job)
-
     while True:
         schedule.run_pending()
         time.sleep(1)
