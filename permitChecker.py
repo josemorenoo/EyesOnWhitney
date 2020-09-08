@@ -113,9 +113,16 @@ if __name__ == "__main__":
         '''
         
         permits = find_available_permits(resp)
+        seen_permits = set()
         if len(permits) > 0:
-            permits_available = '\n'.join(permits)
-            send_word_at_once(people_who_care, permits_available)
+            permits_available = ''
+            for permit in permits:
+                if permit not in seen_permits:
+                    seen_permits.add(permit)
+                    permits_available += '\n' + permit 
+            if permits_available is not '':
+                send_word_at_once(people_who_care, permits_available)
+            print(permits_available)
         else:
             permits_available = FAILURE_EMOJI + ' No permits found between {} [{}] and {} [{}]'.format(start_date, get_weekday(start_date), end_date, get_weekday(end_date))
             print(permits_available)
