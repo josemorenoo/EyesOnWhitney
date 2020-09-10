@@ -117,6 +117,8 @@ if __name__ == "__main__":
         if len(permits) > 0:
             permits_available = ''
             for permit in permits:
+                print('permit: ' + permit)
+                print('cache: ' + seen_permits)
                 if permit not in seen_permits:
                     seen_permits.add(permit)
                     permits_available += '\n' + permit 
@@ -127,10 +129,9 @@ if __name__ == "__main__":
             permits_available = FAILURE_EMOJI + ' No permits found between {} [{}] and {} [{}]'.format(start_date, get_weekday(start_date), end_date, get_weekday(end_date))
             print(permits_available)
 
-
-    SCHEDULE = True
+    # runs continuously in the terminal, check every five min if SCHEDULE
+    SCHEDULE = True 
     
-    # run on a schedule while AWS gets their shit together
     if (SCHEDULE):
         schedule.every(5).minutes.do(job)
         while True:
