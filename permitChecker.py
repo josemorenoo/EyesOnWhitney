@@ -117,8 +117,6 @@ if __name__ == "__main__":
         if len(permits) > 0:
             permits_available = ''
             for permit in permits:
-                print('permit: ' + permit)
-                print('cache: ' + seen_permits)
                 if permit not in seen_permits:
                     seen_permits.add(permit)
                     permits_available += '\n' + permit 
